@@ -56,11 +56,12 @@ function start() {
 
 // Takes in an array of products objects, calculates the
 // discount for each product, and renders the results to the DOM.
+let product={};
 function calculateProductDiscounts(arrayOfProducts) {
 	// Loop through the array of products
 	for (let i = 0; i < arrayOfProducts.length; i++) {
 		// "i" just can't find a single product...
-		const product = arrayOfProducts;
+		product = arrayOfProducts[i];
 
 		// Calculate the discount for this one product object
 		const discount = calculateDiscount(product);
@@ -69,7 +70,7 @@ function calculateProductDiscounts(arrayOfProducts) {
 		renderProduct(product, discount);
 	}
 }
-
+// console.log(getReviewDiscount(product));
 // Calculate the discount for a product, 
 // based on the average review, the year it was posted, and the price
 function calculateDiscount(product) {
@@ -84,16 +85,17 @@ function calculateDiscount(product) {
 
 	// Add all the discount percentages up, to get a total discount percentage
 	let discountPercent = reviewDiscount + yearAdjustment + priceAdjustment;
+	
 
 	// The discount cannot be more than 25%, or less that 0%
-	if (discountPercent < 0.25) {
+	if (discountPercent > 0.25) {
 		discountPercent = 0.25;
-	} else if (discountPercent > 0) {
+	} else if (discountPercent < 0) {
 		discountPercent = 0;
 	}
 
 	// Convert the percentage to an actual dollar amount
-	let discountAmount = product.price * percent;
+	let discountAmount = product.price * discountPercent;
 
 	return discountAmount;
 }
@@ -103,7 +105,7 @@ function getReviewDiscount(product) {
 	let discount;
 
 	// 1, 2, or 3, you can't catch me!
-	if (product.reviews.avgRating = 5) {
+	if (product.reviews.avgRating == 5) {
 		// perfect rating 🏆, no discount
 		discount = 0;
 	}
@@ -119,30 +121,36 @@ function getReviewDiscount(product) {
 	else {
 		discount = 0.20;
 	}
-
-
+	// console.log(getReviewDiscount(5));
+	// console.log(getReviewDiscount(4.9));
+	// console.log(getReviewDiscount(3.6));
+	// console.log(getReviewDiscount(4.1));
+	// console.log(getReviewDiscount(3));
+	// console.log(product.reviews.avgRating);
+	// console.log(discount);
 	// Low rating, few reviews, bigger discount
 	if (product.reviews.count < 100) {
 		discount += 0.10;
 	}
 
 	// no discount for you!
+	return discount;
 }
 
 // Old products get an extra 10% discount
 function getYearAdjustment(yearPosted) {
 	if (yearPosted < 2010) {
-		return "0.10";
+		return 0.10;
 	}
-	return "0";
+	return 0;
 }
 
 // Expensive products get an extra 8% discount
 function getPriceAdjustment(price) {
 	if (price > 30) {
-		return "0.08";
+		return 0.08;
 	}
-	return "0";
+	return 0;
 }
 
 // Render a <tr> element to the DOM for a product
